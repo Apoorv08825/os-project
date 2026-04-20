@@ -18,8 +18,8 @@ export default defineConfig({
     },
   },
   build: {
-    // Vercel expects client assets under dist/client
-    outDir: "dist/client",
+    // Must match outputDirectory in vercel.json
+    outDir: "dist",
   },
   server: {
     port: 8080,
