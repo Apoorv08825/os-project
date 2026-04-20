@@ -17,9 +17,14 @@ export default defineConfig({
       "@": "/src",
     },
   },
+  build: {
+    // Vercel expects client assets under dist/client
+    outDir: "dist/client",
+  },
   server: {
     port: 8080,
     host: true,
-    strictPort: true,
+    // Allow fallback to another port if 8080 is in use
+    strictPort: false,
   },
 });
