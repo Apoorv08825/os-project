@@ -4,7 +4,7 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-// Standard Vite configuration for TanStack Start
+// TanStack Start — SSR framework, builds client + server bundles
 export default defineConfig({
   plugins: [
     tanstackStart(),
@@ -18,13 +18,11 @@ export default defineConfig({
     },
   },
   build: {
-    // Must match outputDirectory in vercel.json
     outDir: "dist",
   },
   server: {
     port: 8080,
     host: true,
-    // Allow fallback to another port if 8080 is in use
     strictPort: false,
   },
 });
