@@ -1,0 +1,25 @@
+project_id = "zbzmvtvyysqbhfkfylog"
+
+[functions.check-lockout]
+verify_jwt = false
+
+[functions.record-failed-login]
+verify_jwt = false
+
+[functions.check-password-history]
+verify_jwt = true
+
+[functions.record-password-history]
+verify_jwt = true
+
+[functions.pam-authenticate]
+verify_jwt = false
+
+[functions.integrity-check]
+verify_jwt = true
+
+[functions.send-email-otp]
+verify_jwt = false
+
+[functions.verify-email-otp]
+verify_jwt = false
