@@ -61,7 +61,11 @@ function Signup() {
     setLoading(false);
 
     if (error) {
-      toast.error(error.message);
+      if (error.message.toLowerCase().includes("email rate limit exceeded")) {
+        toast.error("Email rate limit exceeded. Please wait a while or try a different email.");
+      } else {
+        toast.error(error.message);
+      }
       return;
     }
 

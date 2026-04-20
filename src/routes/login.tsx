@@ -44,18 +44,21 @@ function Login() {
     setLoading(true);
     // Pre-check lockout status
     try {
-      const lockoutRes = await supabase.functions.invoke("check-lockout", {
+      const { data: lockoutRes, error: lockoutErr } = await supabase.functions.invoke("check-lockout", {
         body: { email: parsed.data.email },
       });
-      if (lockoutRes.data?.locked) {
+      
+      if (lockoutErr) {
+        console.warn("Lockout check failed (skipping):", lockoutErr);
+      } else if (lockoutRes?.locked) {
         setLoading(false);
         toast.error(
-          `Account temporarily locked. Try again in ${lockoutRes.data.minutes_remaining} minutes.`
+          `Account temporarily locked. Try again in ${lockoutRes.minutes_remaining} minutes.`
         );
         return;
       }
-    } catch {
-      // continue if check fails
+    } catch (err) {
+      console.warn("Unexpected error during lockout check (skipping):", err);
     }
 
     const { data, error } = await supabase.auth.signInWithPassword({
@@ -67,11 +70,12 @@ function Login() {
       // Record failure — wrapped in try-catch so CORS/missing edge-function
       // never blocks the loading state or error toast
       try {
-        await supabase.functions.invoke("record-failed-login", {
+        const { error: recordErr } = await supabase.functions.invoke("record-failed-login", {
           body: { email: parsed.data.email },
         });
-      } catch {
-        // non-critical — continue
+        if (recordErr) console.warn("Failed to record login attempt:", recordErr);
+      } catch (err) {
+        console.warn("Unexpected error recording login attempt:", err);
       }
       setLoading(false);
       toast.error("Invalid credentials");

@@ -23,11 +23,23 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const loadRoles = async (uid: string) => {
-    const { data } = await supabase
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", uid);
-    setRoles((data ?? []).map((r) => r.role as AppRole));
+    try {
+      const { data, error } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", uid);
+      
+      if (error) {
+        console.error("Error loading user roles:", error.message);
+        setRoles([]);
+        return;
+      }
+      
+      setRoles((data ?? []).map((r) => r.role as AppRole));
+    } catch (err) {
+      console.error("Unexpected error loading user roles:", err);
+      setRoles([]);
+    }
   };
 
   useEffect(() => {

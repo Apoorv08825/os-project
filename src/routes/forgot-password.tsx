@@ -36,8 +36,13 @@ function ForgotPassword() {
       redirectTo: `${window.location.origin}/reset-password`,
     });
     setLoading(false);
+
     if (error) {
-      toast.error(error.message);
+      if (error.message.toLowerCase().includes("email rate limit exceeded")) {
+        toast.error("Email rate limit exceeded. Please wait a while or try again later.");
+      } else {
+        toast.error(error.message);
+      }
       return;
     }
     setSent(true);
